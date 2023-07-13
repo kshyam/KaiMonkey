@@ -1,21 +1,18 @@
-global:
-  runner:
-    containers:
-    - image: saurabh3460/terrascan:latest
-
 tasks:
   scanning:
     steps:
     - checkout
     - commands:
       - |
-          cd terraform/aws/
-          terraform init
-          cd ../../
-          terrascan scan -o junit-xml -x json > junit_report.xml || true
-          sed -i '/{"/d' junit_report.xml
-          cat junit_report.xml
+          curl -L "$(curl -s https://api.github.com/repos/tenable/terrascan/releases/latest | grep -o -E "https://.+?_Darwin_x86_64.tar.gz")" > terrascan.tar.gz
+          tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz
+          install terrascan /usr/local/bin && rm terrascan
+          cd terraform/aws
+
+          terrascan scan -o junit-xml -x json > junit_report.xml 
+          # sed -i '/{"/d' junit_report.xml
+          # cat junit_report.xml
     - reports/junit:
-        paths: ["junit_report.xml"]
+        paths: ["junit_report.xml"] 
 
 
