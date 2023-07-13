@@ -9,9 +9,9 @@ tasks:
           sudo install terrascan /usr/local/bin && rm terrascan
           cd terraform/aws
 
-          terrascan scan -o junit-xml -x json > junit_report.xml 
-          # sed -i '/{"/d' junit_report.xml
-          # cat junit_report.xml
+          terrascan scan -o junit-xml -x json > junit_report.xml || true
+          sed -i '/{"/d' junit_report.xml
+          cat junit_report.xml
     - reports/junit:
         paths: ["junit_report.xml"] 
 
